@@ -23,7 +23,7 @@ object Dependencies {
 
   val circe = Seq(
     "io.circe" %% "circe-core"
-  ).map(_ % "0.15.0-M1") ++
+  ).map(_           % "0.15.0-M1") ++
     Seq("io.circe" %% "circe-fs2" % "0.14.0")
 
   val fs2 = Seq(
@@ -32,28 +32,28 @@ object Dependencies {
   ).map("co.fs2" %% _ % "3.2.3")
 
   val cats = Seq(
-    "org.typelevel" %% "cats-core" % "2.7.0",
+    "org.typelevel" %% "cats-core"   % "2.7.0",
     "org.typelevel" %% "cats-effect" % "3.3.1"
   )
 
   val postgres = Seq(
     "org.postgresql" % "postgresql" % "42.3.1",
-    "org.tpolecat" %% "skunk-core" % "0.2.3"
+    "org.tpolecat"  %% "skunk-core" % "0.2.3"
   )
 
-  val tapirVersion = "0.20.0-M3"
+  val tapirVersion   = "0.20.0-M3"
   val tapirNamespace = "com.softwaremill.sttp.tapir"
 
   val tapir = Seq(
     "tapir-core",
     "tapir-sttp-client",
+    "tapir-http4s-server",
     "tapir-json-circe"
-  ).map(tapirNamespace%% _ % tapirVersion) ++ Seq("com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % "3.3.18")
-
+  ).map(tapirNamespace %% _ % tapirVersion) ++ Seq("com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % "3.3.18")
 
   val tapirTest = Seq(
-     "tapir-server-tests"
-    ).map(tapirNamespace %% _ % tapirVersion)
+    "tapir-server-tests"
+  ).map(tapirNamespace %% _ % tapirVersion)
 
   val decline = Seq(
     "decline-effect",
@@ -70,9 +70,8 @@ object Dependencies {
   val dependencies = circe ++ fs2 ++ cats ++ postgres ++ tapir ++ decline
 
   val testDependencies = (Seq(
-    "org.scalacheck" %% "scalacheck" % "1.15.4",
-    "org.typelevel" %% "munit-cats-effect-3" % "1.0.3"
+    "org.scalacheck" %% "scalacheck"          % "1.15.4",
+    "org.typelevel"  %% "munit-cats-effect-3" % "1.0.3"
   ) ++ scalacheckEffect ++ tapirTest).map(_ % "it,test")
-
 
 }

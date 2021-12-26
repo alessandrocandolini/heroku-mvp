@@ -1,3 +1,4 @@
+package status
 import cats.effect.{IO, IOApp}
 import cats.effect.std.Console
 import cats.implicits.*
@@ -16,22 +17,15 @@ import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.blaze.server.BlazeServerBuilder
 import scala.language.unsafeNulls
-import status.StatusHandler.*
 
-object Main extends IOApp:
+case class StatusResponse(status: String) derives CanEqual, MyCodecAsObject
 
-  val statusRoutes: HttpRoutes[IO] =
-    Http4sServerInterpreter[IO]().toRoutes(statusEndpoint.serverLogic(statusHandler))
+object StatusHandler:
+  val ok: StatusResponse = StatusResponse("ok")
 
-  val server = statusRoutes.orNotFound
+  val statusEndpoint: PublicEndpoint[Unit, Nothing, StatusResponse, Any] =
+    infallibleEndpoint.get
+      .in("status")
+      .out(jsonBody[StatusResponse])
 
-  override def run(args: List[String]): IO[ExitCode] = {
-    val port = 8080
-    BlazeServerBuilder[IO]
-      .bindHttp(port, "localhost")
-      .withHttpApp(server)
-      .serve
-      .compile
-      .drain
-      .map(_ => ExitCode.Success)
-  }
+  val statusHandler: Unit => IO[Either[Nothing, StatusResponse]] = _ => IO.pure(Right(ok))

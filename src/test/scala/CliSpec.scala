@@ -13,7 +13,7 @@ class OptsSpec extends FunSuite:
   }
 
   test("opts can parse valid args with stage env") {
-    val actual = command.parse(
+    val actual   = command.parse(
       Seq(
         "-n",
         "5",
@@ -34,7 +34,7 @@ class OptsSpec extends FunSuite:
   }
 
   test("opts can parse valid args with prod env") {
-    val actual = command.parse(
+    val actual   = command.parse(
       Seq(
         "-n",
         "5",
@@ -54,7 +54,7 @@ class OptsSpec extends FunSuite:
   }
 
   test("opts can parse valid args without stage/prod flag") {
-    val actual = command.parse(
+    val actual   = command.parse(
       Seq(
         "-n",
         "5",
