@@ -17,15 +17,18 @@ import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.blaze.server.BlazeServerBuilder
 import scala.language.unsafeNulls
+import sttp.tapir.server.ServerEndpoint
 
 case class StatusResponse(status: String) derives CanEqual, MyCodecAsObject
 
-object StatusHandler:
+object StatusEndpoint:
   val ok: StatusResponse = StatusResponse("ok")
 
-  val statusEndpoint: PublicEndpoint[Unit, Nothing, StatusResponse, Any] =
+  val endpoint: PublicEndpoint[Unit, Nothing, StatusResponse, Any] =
     infallibleEndpoint.get
       .in("status")
       .out(jsonBody[StatusResponse])
 
-  val statusHandler: Unit => IO[Either[Nothing, StatusResponse]] = _ => IO.pure(Right(ok))
+  val handler: Unit => IO[Either[Nothing, StatusResponse]] = _ => IO.pure(Right(ok))
+
+  val fullEndpoint = endpoint.serverLogic(handler)

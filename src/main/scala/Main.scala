@@ -16,12 +16,12 @@ import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.blaze.server.BlazeServerBuilder
 import scala.language.unsafeNulls
-import status.StatusHandler.*
+import status.StatusEndpoint.*
 
 object Main extends IOApp:
 
   val statusRoutes: HttpRoutes[IO] =
-    Http4sServerInterpreter[IO]().toRoutes(statusEndpoint.serverLogic(statusHandler))
+    Http4sServerInterpreter[IO]().toRoutes(fullEndpoint)
 
   val server = statusRoutes.orNotFound
 
