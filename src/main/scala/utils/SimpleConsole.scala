@@ -1,10 +1,10 @@
 package utils;
 
+import cats.{Applicative, Show}
 import cats.effect.std.Console
-import cats.Show
-import cats.Applicative
 import fs2.Stream
 import io.circe.{Codec, Decoder, HCursor, JsonObject}
+
 import scala.deriving.Mirror
 
 trait SimpleConsole[F[_]]:

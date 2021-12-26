@@ -1,13 +1,8 @@
-import cats.effect.{IO, IOApp}
-import cats.effect.std.Console
-import cats.Show
-import cli.*
-import com.monovore.decline.Opts
+import cats.{Functor, Show}
+import cats.effect.Concurrent
+import cli.Args
 import fs2.*
-import cats.Functor
 import utils.*
-import utils.simpleConsole
-import cats.effect.*
 
 object Cli:
 

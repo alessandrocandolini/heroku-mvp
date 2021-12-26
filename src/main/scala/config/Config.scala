@@ -1,11 +1,10 @@
 package config
 
-import cats.Applicative
+import cats.{Applicative, Monad}
 import cats.effect.Sync
-import org.http4s.server.{ServerBuilder, defaults}
-import pureconfig.*
+import cats.implicits.toFlatMapOps
+import pureconfig.{ConfigSource, ConfigReader}
 import pureconfig.error.ConfigReaderFailures
-import cats.implicits.*
 
 case class Config(
   port: Int,
@@ -21,11 +20,11 @@ object Config:
   def readDefaultConfig: Either[ConfigReaderFailures, Config] = ConfigSource.default.load[Config]
 
   def raiseError[F[_]: Sync: Applicative]: Either[ConfigReaderFailures, Config] => F[Config] = {
-    case Left(l)  => Sync[F].raiseError[Config](ErrorParsingConfig(""))
+    case Left(l)  => Sync[F].raiseError[Config](ErrorParsingConfig(l.prettyPrint()))
     case Right(c) => Applicative[F].pure(c)
   }
 
-  def readConfigOrThrow[F[_]: Sync: Applicative]: F[Config] =
+  def readConfigOrThrow[F[_]: Sync: Monad]: F[Config] =
     Sync[F]
       .delay(readDefaultConfig)
       .flatMap(raiseError)

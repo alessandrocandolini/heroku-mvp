@@ -1,6 +1,7 @@
 package utils;
 
 import io.circe.{Codec, Decoder, HCursor, JsonObject}
+
 import scala.deriving.Mirror
 
 trait MyCodecAsObject[A] extends Codec.AsObject[A]
