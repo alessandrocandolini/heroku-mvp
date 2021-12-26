@@ -21,6 +21,9 @@ object Settings {
 
 object Dependencies {
 
+  private val tapirVersion = "0.20.0-M3"
+  private val tapirNamespace = "com.softwaremill.sttp.tapir"
+
   val circe = Seq(
     "io.circe" %% "circe-core"
   ).map(_ % "0.15.0-M1") ++
@@ -41,16 +44,16 @@ object Dependencies {
     "org.tpolecat" %% "skunk-core" % "0.2.3"
   )
 
-  val tapirVersion = "0.20.0-M3"
-  val tapirNamespace = "com.softwaremill.sttp.tapir"
+
 
   val tapir = Seq(
     "tapir-core",
     "tapir-sttp-client",
     "tapir-http4s-server",
-    "tapir-json-circe"
+    "tapir-openapi-docs",
+    "tapir-json-circe",
+    "tapir-cats"
   ).map(tapirNamespace%% _ % tapirVersion) ++ Seq("com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % "3.3.18")
-
 
   val tapirTest = Seq(
      "tapir-server-tests"
@@ -61,6 +64,10 @@ object Dependencies {
     "decline"
   ).map("com.monovore" %% _ % "2.2.0")
 
+  val config = Seq(
+    "pureconfig-core"
+  ).map("com.github.pureconfig" %%  _ % "0.17.1" )
+
   val scalacheckEffect = Seq(
     "scalacheck-effect",
     "scalacheck-effect-munit"
@@ -68,7 +75,7 @@ object Dependencies {
     "org.typelevel" %% _ % "1.0.3"
   )
 
-  val dependencies = circe ++ fs2 ++ cats ++ postgres ++ tapir ++ decline
+  val dependencies = circe ++ fs2 ++ config ++ cats ++ postgres ++ tapir ++ decline
 
   val testDependencies = (Seq(
     "org.scalacheck" %% "scalacheck" % "1.15.4",

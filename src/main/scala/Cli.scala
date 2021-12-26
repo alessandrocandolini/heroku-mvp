@@ -10,13 +10,14 @@ import utils.simpleConsole
 
 object Cli:
 
-  def source : Stream[Pure, String] = Stream("hello", "world")
+  def source: Stream[Pure, String] = Stream("hello", "world")
 
-  def pipeline[F[_] : SimpleConsole : Functor, A : Show] : Stream[F,A] => Stream[F,A] =
+  def pipeline[F[_]: SimpleConsole: Functor, A: Show]: Stream[F, A] => Stream[F, A] =
     _.evalTap(SimpleConsole[F].println)
 
   val program: Args => IO[Unit] = _ =>
-    source.covary[IO]
+    source
+      .covary[IO]
       .through(pipeline)
       .compile
       .drain

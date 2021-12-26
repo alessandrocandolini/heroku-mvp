@@ -15,7 +15,7 @@ class ArgsSpec extends FunSuite:
   }
 
   test("opts can parse valid args with stage env") {
-    val actual = command.parse(
+    val actual   = command.parse(
       Seq(
         "-p",
         "5",
@@ -33,7 +33,7 @@ class ArgsSpec extends FunSuite:
   }
 
   test("opts can parse valid args with prod env") {
-    val actual = command.parse(
+    val actual   = command.parse(
       Seq(
         "-p",
         "5",
@@ -50,7 +50,7 @@ class ArgsSpec extends FunSuite:
   }
 
   test("opts can parse valid args without stage/prod flag and port") {
-    val actual = command.parse(
+    val actual   = command.parse(
       Seq()
     )
     val expected = Args(

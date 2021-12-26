@@ -1,19 +1,16 @@
-
-import org.scalacheck.Properties
-import org.scalacheck.Arbitrary
+import org.scalacheck.{Arbitrary, Gen, Prop, Properties}
 import org.scalacheck.Prop.forAll
-import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
+import munit.{CatsEffectSuite, Location, ScalaCheckEffectSuite, ScalaCheckSuite, TestOptions}
 import org.scalacheck.effect.PropF.*
 import cats.effect.*
 import fs2.*
-import org.scalacheck.Gen
 import cats.data.State
 import cats.data.StateT
 import cats.Show
+import org.scalacheck.effect.PropF
 import utils.*
-import munit.ScalaCheckSuite
 
-class PrintLeftPropertiesEffectful extends ScalaCheckEffectSuite:
+class PrintLeftPropertiesEffectful extends CatsEffectSuite with ScalaCheckEffectSuite:
 
   val initialState = MockConsole(List.empty)
 
@@ -61,8 +58,7 @@ class PrintLeftPropertiesEffectful extends ScalaCheckEffectSuite:
 
 extension [A](genA: Gen[A])
   def toFinitePureStreamGen: Gen[Stream[Pure, A]] = {
-    def smallLists[T]: Gen[T] => Gen[List[T]] = t =>
-      Gen.posNum[Int].map(_ % 20).flatMap(Gen.listOfN(_, t))
+    def smallLists[T]: Gen[T] => Gen[List[T]] = t => Gen.posNum[Int].map(_ % 20).flatMap(Gen.listOfN(_, t))
 
     Gen.frequency(
       1 -> Gen.const(Stream.empty),
@@ -70,21 +66,17 @@ extension [A](genA: Gen[A])
       5 -> smallLists(genA).map(as => Stream.emits(as).chunkLimit(1).unchunks),
       5 -> smallLists(smallLists(genA))
         .map(
-          _.foldLeft(Stream.empty.covaryOutput[A])((acc, as) =>
-            acc ++ Stream.emits(as)
-          )
+          _.foldLeft(Stream.empty.covaryOutput[A])((acc, as) => acc ++ Stream.emits(as))
         ),
       5 -> smallLists(smallLists(genA))
         .map(
-          _.foldRight(Stream.empty.covaryOutput[A])((as, acc) =>
-            Stream.emits(as) ++ acc
-          )
+          _.foldRight(Stream.empty.covaryOutput[A])((as, acc) => Stream.emits(as) ++ acc)
         )
     )
   }
 
 given [A](using
-    a: Arbitrary[A]
+  a: Arbitrary[A]
 ): Arbitrary[Stream[Pure, A]] = Arbitrary {
   a.arbitrary.toFinitePureStreamGen
 }
