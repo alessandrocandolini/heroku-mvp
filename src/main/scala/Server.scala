@@ -18,13 +18,17 @@ import org.http4s.blaze.server.BlazeServerBuilder
 import scala.language.unsafeNulls
 import status.StatusEndpoint.*
 
-object Main extends CommandIOAppSimple(
-  name = "heroku-mvp",
-  header = "heroku-mvp",
-  version = "0.1"
-):
+object Server:
 
-  override def run: Opts[IO[Unit]] = Args.readArgs.map(program)
+  val statusRoutes: HttpRoutes[IO] =
+    Http4sServerInterpreter[IO]().toRoutes(fullEndpoint)
+
+  val routes = statusRoutes.orNotFound
 
   val program: Args => IO[Unit] = args =>
-    Cli.program(args) *> Server.program(args)
+    BlazeServerBuilder[IO]
+      .bindHttp(args.port, "localhost")
+      .withHttpApp(routes)
+      .serve
+      .compile
+      .drain

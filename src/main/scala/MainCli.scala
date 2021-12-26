@@ -9,7 +9,7 @@ import cli.*
 import utils.simpleConsole
 import cats.effect.ExitCode
 
-object CliMain
+object MainCli
     extends CommandIOAppSimple(
       name = "heroku-mvp",
       header = "heroku-mvp",
