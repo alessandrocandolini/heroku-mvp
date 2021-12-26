@@ -27,4 +27,4 @@ object Main
 
   override def run: Opts[IO[Unit]] = Args.readArgs.map(program)
 
-  val program: Args => IO[Unit] = args => Cli.program(args) *> Server.program(args)
+  val program: Args => IO[Unit] = args => Cli.program[IO](args) *> Server.program[IO](args)

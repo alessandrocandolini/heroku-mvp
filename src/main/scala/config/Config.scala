@@ -1,34 +1,43 @@
 package config
 
+import cats.Applicative
+import cats.effect.Sync
 import org.http4s.server.{ServerBuilder, defaults}
-
 import pureconfig.*
+import pureconfig.error.ConfigReaderFailures
+import cats.implicits.*
 
 case class Config(
-  port: Port,
-  host: Host,
+  port: Int,
+  host: String,
   database: DbConfig
 ) derives CanEqual
 
 object Config:
 
-  given ConfigReader[Port] = ConfigReader[Int].map(Port.apply)
-
-  given ConfigReader[Host] = ConfigReader[String].map(Host.apply)
-
   given ConfigReader[Config] =
     ConfigReader.forProduct3("port", "host", "database")(Config.apply)
 
+  def readDefaultConfig: Either[ConfigReaderFailures, Config] = ConfigSource.default.load[Config]
+
+  def raiseError[F[_]: Sync: Applicative]: Either[ConfigReaderFailures, Config] => F[Config] = {
+    case Left(l)  => Sync[F].raiseError[Config](ErrorParsingConfig(""))
+    case Right(c) => Applicative[F].pure(c)
+  }
+
+  def readConfigOrThrow[F[_]: Sync: Applicative]: F[Config] =
+    Sync[F]
+      .delay(readDefaultConfig)
+      .flatMap(raiseError)
+
 case class DbConfig(
-  user: DbUser,
-  password: DbPassword,
-  host: DbHost,
-  name: DbName
+  user: String,
+  password: String,
+  host: String,
+  name: String
 ) derives CanEqual
 
 object DbConfig:
-  given ConfigReader[DbUser]     = ConfigReader[String].map(DbUser.apply)
-  given ConfigReader[DbPassword] = ConfigReader[String].map(DbPassword.apply)
-  given ConfigReader[DbHost]     = ConfigReader[String].map(DbHost.apply)
-  given ConfigReader[DbName]     = ConfigReader[String].map(DbName.apply)
-  given ConfigReader[DbConfig]   = ConfigReader.forProduct4("user", "password", "host", "name")(DbConfig.apply)
+  given ConfigReader[DbConfig] = ConfigReader.forProduct4("user", "password", "host", "name")(DbConfig.apply)
+
+final case class ErrorParsingConfig(s: String) extends Throwable

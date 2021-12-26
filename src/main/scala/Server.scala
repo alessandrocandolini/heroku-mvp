@@ -11,7 +11,7 @@ import utils.simpleConsole
 import sttp.tapir.*
 import sttp.tapir.json.circe.*
 import sttp.tapir.generic.auto.*
-import cats.effect.ExitCode
+import cats.effect.*
 import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.blaze.server.BlazeServerBuilder
@@ -20,20 +20,25 @@ import scala.language.unsafeNulls
 import status.StatusEndpoint.*
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.swagger.bundle.SwaggerInterpreter
+import pureconfig.*
+import config.*
+import cats.{Applicative, Functor, Show}
 
 object Server:
 
-  val allEndpoints: List[ServerEndpoint[Any, IO]] = List(statusServerEndpoint)
+  def allEndpoints[F[_]: Applicative]: List[ServerEndpoint[Any, F]] = List(statusServerEndpoint)
 
-  val docsEndpoint = SwaggerInterpreter().fromEndpoints[IO](List(statusEndpoint), "My App", "1.0")
+  def docsEndpoint[F[_]] = SwaggerInterpreter().fromEndpoints[F](List(statusEndpoint), "My App", "1.0")
 
-  val routes: HttpRoutes[IO] =
-    Http4sServerInterpreter[IO]().toRoutes(allEndpoints ++ docsEndpoint)
+  def routes[F[_]: Async]: HttpRoutes[F] =
+    Http4sServerInterpreter[F]().toRoutes(allEndpoints ++ docsEndpoint)
 
-  val program: Args => IO[Unit] = args =>
-    BlazeServerBuilder[IO]
-      .bindHttp(args.port, "localhost")
-      .withHttpApp(routes.orNotFound)
-      .serve
-      .compile
-      .drain
+  def program[F[_]: Async: Applicative]: Args => F[Unit] = args =>
+    Config.readConfigOrThrow[F].flatMap { c =>
+      BlazeServerBuilder[F]
+        .bindHttp(c.port, c.host)
+        .withHttpApp(routes.orNotFound)
+        .serve
+        .compile
+        .drain
+    }

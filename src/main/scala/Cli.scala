@@ -7,6 +7,7 @@ import fs2.*
 import cats.Functor
 import utils.*
 import utils.simpleConsole
+import cats.effect.*
 
 object Cli:
 
@@ -15,9 +16,9 @@ object Cli:
   def pipeline[F[_]: SimpleConsole: Functor, A: Show]: Stream[F, A] => Stream[F, A] =
     _.evalTap(SimpleConsole[F].println)
 
-  val program: Args => IO[Unit] = _ =>
+  def program[F[_]: SimpleConsole: Functor: Concurrent]: Args => F[Unit] = _ =>
     source
-      .covary[IO]
+      .covary[F]
       .through(pipeline)
       .compile
       .drain

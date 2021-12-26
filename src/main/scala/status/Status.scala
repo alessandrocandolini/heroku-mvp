@@ -2,10 +2,9 @@ package status
 import cats.effect.{IO, IOApp}
 import cats.effect.std.Console
 import cats.implicits.*
-import cats.Show
+import cats.{Applicative, Functor, Show}
 import com.monovore.decline.Opts
 import fs2.*
-import cats.Functor
 import utils.*
 import cli.*
 import utils.simpleConsole
@@ -16,6 +15,7 @@ import cats.effect.ExitCode
 import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.blaze.server.BlazeServerBuilder
+
 import scala.language.unsafeNulls
 import sttp.tapir.server.ServerEndpoint
 
@@ -29,6 +29,6 @@ object StatusEndpoint:
       .in("status")
       .out(jsonBody[StatusResponse])
 
-  val handler: Unit => IO[Either[Nothing, StatusResponse]] = _ => IO.pure(Right(ok))
+  def handler[F[_]: Applicative]: Unit => F[Either[Nothing, StatusResponse]] = _ => Applicative[F].pure(Right(ok))
 
-  val statusServerEndpoint: ServerEndpoint[Any, IO] = statusEndpoint.serverLogic(handler)
+  def statusServerEndpoint[F[_]: Applicative]: ServerEndpoint[Any, F] = statusEndpoint.serverLogic(handler)

@@ -6,7 +6,7 @@ import pureconfig.*
 class ConfigSpec extends FunSuite:
 
   test("fail to parse invalid input") {
-    ConfigSource.string("{}").load[Config].isRight
+    assert(ConfigSource.string("{}").load[Config].isLeft)
   }
 
   test("correctly parse valid input") {
@@ -25,17 +25,21 @@ class ConfigSpec extends FunSuite:
         """.stripMargin
 
     val expected: Config = Config(
-      port = Port.apply(1212),
-      host = Host.apply("localhost"),
+      port = 1212,
+      host = "localhost",
       database = DbConfig(
-        user = DbUser.apply("dbuser"),
-        password = DbPassword.apply("password"),
-        host = DbHost.apply("localhost"),
-        name = DbName.apply("server")
+        user = "dbuser",
+        password = "password",
+        host = "localhost",
+        name = "server"
       )
     )
 
     val actual = ConfigSource.string(s).load[Config]
     assertEquals(actual, Right(expected))
 
+  }
+
+  test("can parse actual application.conf successfully") {
+    assert(Config.readDefaultConfig.isRight)
   }
