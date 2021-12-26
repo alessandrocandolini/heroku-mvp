@@ -1,5 +1,6 @@
 package cli
 import com.monovore.decline.Opts
+import cats.implicits.*
 
 enum Verbose derives CanEqual:
   case Verbose

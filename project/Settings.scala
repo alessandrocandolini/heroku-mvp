@@ -44,8 +44,6 @@ object Dependencies {
     "org.tpolecat" %% "skunk-core" % "0.2.3"
   )
 
-
-
   val tapir = Seq(
     "tapir-core",
     "tapir-sttp-client",
@@ -65,6 +63,11 @@ object Dependencies {
     "decline"
   ).map("com.monovore" %% _ % "2.2.0")
 
+  val logs =  Seq(
+    "woof-core",
+//     "woof-slf4j",
+  ).map("org.legogroup" %% _ % "0.2.1")
+
   val config = Seq(
     "pureconfig-core"
   ).map("com.github.pureconfig" %%  _ % "0.17.1" )
@@ -76,7 +79,7 @@ object Dependencies {
     "org.typelevel" %% _ % "1.0.3"
   )
 
-  val dependencies = circe ++ fs2 ++ config ++ cats ++ postgres ++ tapir ++ decline
+  val dependencies = circe ++ fs2 ++ config ++ cats ++ postgres ++ tapir ++ decline ++ logs
 
   val testDependencies = (Seq(
     "org.scalacheck" %% "scalacheck" % "1.15.4",
