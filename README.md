@@ -1,5 +1,7 @@
 # heroku-mvp
 
+[![Scala CI](https://github.com/alessandrocandolini/heroku-mvp/actions/workflows/scala.yml/badge.svg)](https://github.com/alessandrocandolini/heroku-mvp/actions/workflows/scala.yml)
+
 ## Run the tests
 
 ```shell
