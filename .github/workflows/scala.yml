@@ -16,6 +16,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
       - name: Checkout current branch
         uses: actions/checkout@v2
         with:
