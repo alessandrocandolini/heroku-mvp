@@ -11,7 +11,7 @@ class ConfigSpec extends FunSuite:
 
   test("correctly parse valid input") {
 
-    val s : String =
+    val s: String =
       """{
         |port = 1212
         |host = "localhost"
@@ -24,16 +24,16 @@ class ConfigSpec extends FunSuite:
         |}
         """.stripMargin
 
-    val expected : Config = Config(
-        port = Port.apply(1212),
-        host = Host.apply("localhost"),
-        database = DbConfig(
-          user = DbUser.apply("dbuser"),
-          password = DbPassword.apply("password"),
-          host = DbHost.apply("localhost"),
-          name = DbName.apply("server")
-        )
+    val expected: Config = Config(
+      port = Port.apply(1212),
+      host = Host.apply("localhost"),
+      database = DbConfig(
+        user = DbUser.apply("dbuser"),
+        password = DbPassword.apply("password"),
+        host = DbHost.apply("localhost"),
+        name = DbName.apply("server")
       )
+    )
 
     val actual = ConfigSource.string(s).load[Config]
     assertEquals(actual, Right(expected))

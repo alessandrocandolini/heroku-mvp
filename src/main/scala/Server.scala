@@ -15,20 +15,25 @@ import cats.effect.ExitCode
 import org.http4s.HttpRoutes
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.blaze.server.BlazeServerBuilder
+
 import scala.language.unsafeNulls
 import status.StatusEndpoint.*
+import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
 
 object Server:
 
-  val statusRoutes: HttpRoutes[IO] =
-    Http4sServerInterpreter[IO]().toRoutes(fullEndpoint)
+  val allEndpoints: List[ServerEndpoint[Any, IO]] = List(statusServerEndpoint)
 
-  val routes = statusRoutes.orNotFound
+  val docsEndpoint = SwaggerInterpreter().fromEndpoints[IO](List(statusEndpoint), "My App", "1.0")
+
+  val routes: HttpRoutes[IO] =
+    Http4sServerInterpreter[IO]().toRoutes(allEndpoints ++ docsEndpoint)
 
   val program: Args => IO[Unit] = args =>
     BlazeServerBuilder[IO]
       .bindHttp(args.port, "localhost")
-      .withHttpApp(routes)
+      .withHttpApp(routes.orNotFound)
       .serve
       .compile
       .drain

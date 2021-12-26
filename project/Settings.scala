@@ -50,7 +50,8 @@ object Dependencies {
     "tapir-core",
     "tapir-sttp-client",
     "tapir-http4s-server",
-    "tapir-openapi-docs",
+    "tapir-openapi-docs", // remove ?
+    "tapir-swagger-ui-bundle",
     "tapir-json-circe",
     "tapir-cats"
   ).map(tapirNamespace%% _ % tapirVersion) ++ Seq("com.softwaremill.sttp.client3" %% "async-http-client-backend-cats" % "3.3.18")

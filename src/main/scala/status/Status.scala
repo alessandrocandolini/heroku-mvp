@@ -24,11 +24,11 @@ case class StatusResponse(status: String) derives CanEqual, MyCodecAsObject
 object StatusEndpoint:
   val ok: StatusResponse = StatusResponse("ok")
 
-  val endpoint: PublicEndpoint[Unit, Nothing, StatusResponse, Any] =
+  val statusEndpoint: PublicEndpoint[Unit, Nothing, StatusResponse, Any] =
     infallibleEndpoint.get
       .in("status")
       .out(jsonBody[StatusResponse])
 
   val handler: Unit => IO[Either[Nothing, StatusResponse]] = _ => IO.pure(Right(ok))
 
-  val fullEndpoint = endpoint.serverLogic(handler)
+  val statusServerEndpoint: ServerEndpoint[Any, IO] = statusEndpoint.serverLogic(handler)
