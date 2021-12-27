@@ -34,6 +34,13 @@ and can later be run using
 docker run -p 8080:8080 <image tag>
 ```
 
+To check that the service is running fine, assuming `curl` is available,
+```
+curl http://localhost:8080/status
+
+// {"status":"ok"}
+```
+
 For portability, the project is setup to rely directly on `Dockerfile` instead of using sbt plugins like [sbt-docker](https://github.com/marcuslonnberg/sbt-docker).
 In the future, we might explore [sbt-native-image](https://github.com/scalameta/sbt-native-image)
 
