@@ -1,11 +1,11 @@
 
-ARG JAVA_VERSION
+ARG JAVA_VERSION=11
 
 # BUILDER
 
 FROM openjdk:$JAVA_VERSION-jre-slim-buster as builder
 
-ARG SBT_VERSION
+ARG SBT_VERSION=1.6.0
 
 # Install dependencies
 RUN apt-get update && apt-get install -y curl bash tar ca-certificates make git procps \
