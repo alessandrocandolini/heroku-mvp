@@ -24,11 +24,13 @@ object Server:
     Http4sServerInterpreter[F]().toRoutes(allEndpoints ++ docsEndpoint)
 
   def program[F[_]: Async: Monad: Logger]: Args => F[Unit] = args =>
-    Config.readConfigOrThrow[F].flatMap { c =>
-      BlazeServerBuilder[F]
+    for {
+      c <- Config.readConfigOrThrow[F]
+      _ <- Logger[F].info(s"server running on $c")
+      u <- BlazeServerBuilder[F]
         .bindHttp(c.port, c.host)
         .withHttpApp(routes.orNotFound)
         .serve
         .compile
         .drain
-    }
+    } yield u
