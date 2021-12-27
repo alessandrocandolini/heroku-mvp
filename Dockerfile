@@ -34,6 +34,5 @@ WORKDIR /home/appuser
 USER appuser
 
 COPY --from=builder --chown=appuser /work/target/scala-3.1.0/heroku-mvp.jar app.jar
-EXPOSE 8080
 
 CMD ["java","-jar","app.jar"]
