@@ -21,7 +21,7 @@ The plugin is configured explicitly to run tests on `assembly` task. The generat
 
 ## Docker
 
-`Dockerfile` contains Docker [multi-stage](https://docs.docker.com/develop/develop-images/multistage-build/) instructions to assembly a lightweight image that only contains the final jar.
+[Dockerfile](Dockerfile) contains Docker [multi-stage](https://docs.docker.com/develop/develop-images/multistage-build/) instructions to assembly a lightweight image that only contains the final jar.
 Intermediate steps are used to fetch sbt and build the jar. The final image is based on `jre-slim-buster`.
 
 Assuming `docker` is up and running, the image can be built using
