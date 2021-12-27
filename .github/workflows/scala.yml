@@ -6,18 +6,17 @@ on:
   pull_request:
     branches: [ main ]
 
-concurrency: 
+concurrency:
   group: ${{ github.ref }}
-  cancel-in-progress: true      
+  cancel-in-progress: true
 
 jobs:
   build:
     name: Build and Test
     strategy:
       matrix:
-        os: [ubuntu-latest]
         scala: [3.1.0]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     steps:
 
@@ -26,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Java 
+      - name: Setup Java
         uses: actions/setup-java@v2
         with:
           java-version: '11'
@@ -46,3 +45,14 @@ jobs:
 
       - name: Build project
         run: sbt ++${{ matrix.scala }} clean assembly
+
+      - name: Deploy
+        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "alessandrocandolini-heroku-mvp" #Must be unique in Heroku
+          heroku_email: "alessandro.candolini@gmail.com"
+          usedocker: true
+          healthcheck: "https://[YOUR APP's NAME].herokuapp.com/status"
+          delay: 5
+          rollbackonhealthcheckfailed: true
