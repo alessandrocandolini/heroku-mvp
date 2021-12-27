@@ -53,6 +53,6 @@ jobs:
           heroku_app_name: "alessandrocandolini-heroku-mvp" #Must be unique in Heroku
           heroku_email: "alessandro.candolini@gmail.com"
           usedocker: true
-          healthcheck: "https://[YOUR APP's NAME].herokuapp.com/status"
+          healthcheck: "https://alessandrocandolini-heroku-mvp.herokuapp.com/status"
           delay: 5
           rollbackonhealthcheckfailed: true
