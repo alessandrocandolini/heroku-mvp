@@ -26,9 +26,7 @@ lazy val root = project
 
 val customMergeStrategy: String => MergeStrategy = {
   case r if r.endsWith(".conf")            => MergeStrategy.concat
-  case PathList("META-INF", "maven", "org.webjars", "swagger-ui", "pom.properties") =>
-    MergeStrategy.singleOrError
-  case PathList("MANIFEST.MF") => MergeStrategy.discard
+  case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard // https://stackoverflow.com/questions/46287789/running-an-uber-jar-from-sbt-assembly-results-in-error-could-not-find-or-load-m
   case _                                   => MergeStrategy.first
 }
 
