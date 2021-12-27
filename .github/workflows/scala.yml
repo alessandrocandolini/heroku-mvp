@@ -47,6 +47,7 @@ jobs:
         run: sbt ++${{ matrix.scala }} clean assembly
 
       - name: Deploy
+        if: github.ref == 'refs/heads/main'
         uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
