@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y curl bash tar ca-certificates make git 
        && rm -rf /var/lib/apt/lists/*
 
 # Install sbt
-RUN echo sbt $SBT_VERSION
 RUN curl -fsL "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$SBT_VERSION.tgz" | tar xfz - -C /opt \
   && ln -s /opt/sbt/bin/sbt /usr/bin/sbt \
   && chmod +x /usr/bin/sbt
@@ -20,9 +19,6 @@ RUN curl -fsL "https://github.com/sbt/sbt/releases/download/v$SBT_VERSION/sbt-$S
 # run from non-root folder
 RUN mkdir -p /work
 WORKDIR /work
-
-# test binary
-RUN sbt --debug about
 
 # compile
 COPY . /work
@@ -40,4 +36,4 @@ USER appuser
 COPY --from=builder --chown=appuser /work/target/scala-3.1.0/heroku-mvp.jar app.jar
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["java","-jar","app.jar"]
