@@ -48,10 +48,10 @@ jobs:
 
       - name: Deploy
         if: github.ref == 'refs/heads/main'
-        uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "alessandrocandolini-heroku-mvp" #Must be unique in Heroku
+          heroku_app_name: "alessandrocandolini-heroku-mvp"
           heroku_email: "alessandro.candolini@gmail.com"
           usedocker: true
           healthcheck: "https://alessandrocandolini-heroku-mvp.herokuapp.com/status"
