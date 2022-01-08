@@ -59,6 +59,7 @@ jobs:
           rollbackonhealthcheckfailed: true
 
       - name: Tag release
+        if: github.ref == 'refs/heads/main'
         uses: rickstaa/action-create-tag@v1
         with:
           tag: "latest $(date -u +'%Y%m%d%H%M%SZ')"
