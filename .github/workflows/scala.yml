@@ -59,17 +59,17 @@ jobs:
           rollbackonhealthcheckfailed: true
 
       - name: Create tag name
-        id: get_version
         if: github.ref == 'refs/heads/main'
         run:  |
           VERSION="prod-$(date -u +'%Y%m%d%H%M%SZ')"
-          echo "::set-output name=version::${VERSION}"
+          echo $VERSION
+          echo "release_tag=$VERSION" >> $GITHUB_ENV
 
-      - name: Tag release
+      - name: Create tag
         if: github.ref == 'refs/heads/main'
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: ${{ needs.get_version.outputs.version }}
+          tag: ${{ env.release_tag }}
 
       - name: Create Github Release
         if: github.ref == 'refs/heads/main'
