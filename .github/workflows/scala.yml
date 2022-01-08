@@ -58,11 +58,18 @@ jobs:
           delay: 5
           rollbackonhealthcheckfailed: true
 
+      - name: Create tag name
+        id: get_version
+        if: github.ref == 'refs/heads/main'
+        run:  |
+          VERSION="prod-$(date -u +'%Y%m%d%H%M%SZ')"
+          echo "::set-output name=version::${VERSION}"
+
       - name: Tag release
         if: github.ref == 'refs/heads/main'
         uses: rickstaa/action-create-tag@v1
         with:
-          tag: "latest $(date -u +'%Y%m%d%H%M%SZ')"
+          tag: ${{ needs.get_version.outputs.version }}
 
       - name: Create Github Release
         if: github.ref == 'refs/heads/main'
