@@ -58,6 +58,11 @@ jobs:
           delay: 5
           rollbackonhealthcheckfailed: true
 
+      - name: Tag release
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "latest $(date -u +'%Y%m%d%H%M%SZ')"
+
       - name: Create Github Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v1
